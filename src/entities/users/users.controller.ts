@@ -12,8 +12,8 @@ import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileFilter } from '@/middlewares/fileFilter';
 import { createReadStream } from 'fs';
-import { parse } from 'csv-parse';
-
+/* import { parse } from 'csv-parse'; */
+import { parse } from 'papaparse';
 @Controller()
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
@@ -31,20 +31,15 @@ export class UsersController {
   )
   uploadFile(@UploadedFile() file: Express.Multer.File) {
     const usersArray = [];
-
-    createReadStream(file.path)
-      .pipe(
-        parse({ columns: true }, function (err, {}) {
-          if (err) {
-            throw new BadRequestException(err.message);
-          }
-        }),
-      )
-      .on('data', function (row) {
-        usersArray.push(row);
-      })
-      .on('end', function () {
+    const config = {
+      header: true,
+      chunk: function (result, parser) {
+        usersArray.push(result.data);
+      },
+      complete: function (results, parser) {
         console.log(usersArray);
-      });
+      },
+    };
+    parse(createReadStream(file), config);
   }
 }
