@@ -39,7 +39,7 @@ export class CustomersController {
         dynamicTyping: true,
         unlink: unlink,
         chunk: async function (result, parser) {
-          /*    parser.pause(); */
+          parser.pause();
 
           const uploaded = await customersService.insertMany(result.data);
 
@@ -56,7 +56,8 @@ export class CustomersController {
             errorChunks = [...errorChunks, errorMsg];
           }
           rowCount += result.data.length;
-          /*   parser.resume(); */
+
+          parser.resume();
         },
         complete: function () {
           const msg = {
