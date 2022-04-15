@@ -34,7 +34,8 @@ export class CustomersController {
     return new Promise((resolve, reject) => {
       let errors = [];
       let rowCount = 0;
-      const config = {
+
+      const PARSER_CONFIGURATION = {
         header: true,
         dynamicTyping: true,
         unlink: unlink,
@@ -55,6 +56,7 @@ export class CustomersController {
 
             errors = [...errors, errorMsg];
           }
+
           rowCount += result.data.length;
 
           parser.resume();
@@ -67,12 +69,10 @@ export class CustomersController {
             }
           });
 
-          const msg = {
+          resolve({
             message: errors.length == 0 ? 'Success' : 'Some Failures',
             details: errors,
-          };
-
-          resolve(msg);
+          });
         },
         error: function (error) {
           errors = [...errors, error];
@@ -80,7 +80,7 @@ export class CustomersController {
         },
       };
 
-      parse(createReadStream(file.path), config);
+      parse(createReadStream(file.path), PARSER_CONFIGURATION);
     }).then(
       function onFulfilled(value) {
         return value;
