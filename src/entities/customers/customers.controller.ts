@@ -32,15 +32,13 @@ export class CustomersController {
     const customersService = this.customersService;
 
     return new Promise((resolve, reject) => {
-      let errorChunks = [];
+      let errors = [];
       let rowCount = 0;
       const config = {
         header: true,
         dynamicTyping: true,
         unlink: unlink,
-        chunk: async function (result, parser) {
-          /*    parser.pause(); */
-
+        chunk: async function (result) {
           const uploaded = await customersService.insertMany(result.data);
 
           if (uploaded.success === false) {
@@ -53,17 +51,11 @@ export class CustomersController {
               rowFailed: uploaded.message,
             };
 
-            errorChunks = [...errorChunks, errorMsg];
+            errors = [...errors, errorMsg];
           }
           rowCount += result.data.length;
-          /*   parser.resume(); */
         },
         complete: function () {
-          const msg = {
-            message: errorChunks.length == 0 ? 'Success' : 'Some Failures',
-            details: errorChunks,
-          };
-
           this.unlink(file.path, (err) => {
             if (err) {
               console.error(err);
@@ -71,22 +63,27 @@ export class CustomersController {
             }
           });
 
+          const msg = {
+            message: errors.length == 0 ? 'Success' : 'Some Failures',
+            details: errors,
+          };
+
           resolve(msg);
         },
         error: function (error) {
-          errorChunks = [...errorChunks, error];
-          reject(error);
+          errors = [...errors, error];
+          reject(errors);
         },
       };
 
       parse(createReadStream(file.path), config);
     }).then(
       function onFulfilled(value) {
-        return value; // Success!
+        return value;
       },
 
       function onRejected(reason) {
-        return reason; // Error!
+        return reason;
       },
     );
   }
