@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from '@/entities/users/users.module';
+import { CustomersModule } from '@/entities/customers/customers.module';
 import * as connectionOptions from '@/ormconfig';
 
-const modules = [UsersModule];
+const modules = [CustomersModule];
 
 @Module({
   imports: [TypeOrmModule.forRoot(connectionOptions), ...modules],
