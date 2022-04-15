@@ -4,14 +4,16 @@ import {
   UploadedFile,
   Post,
   UseInterceptors,
-  HttpException,
-  HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileFilter } from '@/middlewares/fileFilter';
+import { createReadStream } from 'fs';
+import { parse } from 'csv-parse';
+
 @Controller()
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
@@ -28,6 +30,21 @@ export class UsersController {
     }),
   )
   uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
+    const usersArray = [];
+
+    createReadStream(file.path)
+      .pipe(
+        parse({ columns: true }, function (err, {}) {
+          if (err) {
+            throw new BadRequestException(err.message);
+          }
+        }),
+      )
+      .on('data', function (row) {
+        usersArray.push(row);
+      })
+      .on('end', function () {
+        console.log(usersArray);
+      });
   }
 }
