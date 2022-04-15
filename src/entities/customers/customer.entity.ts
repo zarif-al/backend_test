@@ -11,7 +11,7 @@ export class Customer {
   @Column()
   address: string;
 
-  @Column({ default: true })
+  @Column()
   enabled: boolean;
 
   @Column({ type: 'datetime' })
