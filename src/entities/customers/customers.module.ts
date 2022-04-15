@@ -8,7 +8,7 @@ import { MulterModule } from '@nestjs/platform-express';
   imports: [
     MulterModule.registerAsync({
       useFactory: () => ({
-        dest: './uploads',
+        dest: './tempStorage',
       }),
     }),
     TypeOrmModule.forFeature([Customer]),
