@@ -4,7 +4,9 @@ import {
   UploadedFile,
   Post,
   UseInterceptors,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { CustomersService } from './customers.service';
 import { Customer } from './customer.entity';
 import { Express } from 'express';
@@ -17,12 +19,13 @@ import { parse } from 'papaparse';
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
-  @Get()
-  getAll(): Promise<Customer[]> {
-    return this.customersService.findAll();
+  @Get('customers')
+  getAll(@Req() request: Request): Promise<Customer[]> {
+    const { offset = 0, limit = 100 } = request.query;
+    return this.customersService.getAll(Number(offset), Number(limit));
   }
 
-  @Post('upload')
+  @Post('import-customers')
   @UseInterceptors(
     FileInterceptor('csv', {
       fileFilter: FileFilter,
@@ -36,22 +39,22 @@ export class CustomersController {
       let rowCount = 0;
 
       const PARSER_CONFIGURATION = {
+        delimiter: ',',
         header: true,
         dynamicTyping: true,
         unlink: unlink,
         chunk: async function (result, parser) {
           parser.pause();
 
-          const uploaded = await customersService.insertMany(result.data);
+          const uploadResponse = await customersService.insertMany(result.data);
 
-          if (uploaded.success === false) {
+          if (uploadResponse.success === false) {
             const errorMsg = {
-              type: 'DB Insert Error',
-              code: 500,
+              type: 'DB Error',
               message:
                 'The following chunk of rows could not be inserted due to faulty data.',
               rows: rowCount + ' to ' + (rowCount + result.data.length),
-              rowFailed: uploaded.message,
+              failureSource: uploadResponse.message,
             };
 
             errors = [...errors, errorMsg];
@@ -71,24 +74,28 @@ export class CustomersController {
 
           resolve({
             message: errors.length == 0 ? 'Success' : 'Some Failures',
+            code: 200,
             details: errors,
           });
         },
         error: function (error) {
           errors = [...errors, error];
-          reject(errors);
+
+          reject({
+            message: 'Parser Error',
+            code: 500,
+            details: errors,
+          });
         },
       };
 
       parse(createReadStream(file.path), PARSER_CONFIGURATION);
-    }).then(
-      function onFulfilled(value) {
+    })
+      .then((value) => {
         return value;
-      },
-
-      function onRejected(reason) {
-        return reason;
-      },
-    );
+      })
+      .catch((err) => {
+        return err;
+      });
   }
 }

@@ -10,8 +10,14 @@ export class CustomersService {
     private customersRepository: Repository<Customer>,
   ) {}
 
-  findAll(): Promise<Customer[]> {
-    return this.customersRepository.find();
+  getAll(offset: number, limit: number): Promise<Customer[]> {
+    return this.customersRepository.find({
+      where: {
+        enabled: true,
+      },
+      skip: offset,
+      take: limit,
+    });
   }
 
   async insertMany(customers: Customer[]): Promise<UploadStatus> {
@@ -23,14 +29,12 @@ export class CustomersService {
           emailBodyTemplate: `Hi ${customer.name},`,
         }),
       );
+
       await this.customersRepository.save(updatedCustomers);
+
       return { success: true, message: [''] };
     } catch (e) {
       return { success: false, message: e.parameters };
     }
-  }
-
-  async remove(id: string): Promise<void> {
-    await this.customersRepository.delete(id);
   }
 }
