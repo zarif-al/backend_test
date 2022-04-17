@@ -11,7 +11,7 @@ export const customerStubs = (): Customer[] => {
       email: 'borne@brn.com',
       address: '123 Main St',
       enabled: true,
-      emailScheduleTime: new Date('5/13/2021  9:33:28 PM'),
+      emailScheduleTime: new Date('5/13/2021 9:33:28 PM'),
       emailBodyTemplate: 'Hi Jason Bourne,',
     };
   });
@@ -25,7 +25,7 @@ export const customerInputStub = (): CustomerInputDTO => {
     email: 'doe@john.com',
     address: '123 Main St',
     enabled: true,
-    emailScheduleTime: '5/13/2021  9:33:28 PM',
+    emailScheduleTime: '5/13/2021 9:33:28 PM',
   };
 };
 
@@ -35,7 +35,7 @@ export const customerStub = (): Customer => {
     email: 'doe@john.com',
     address: '123 Main St',
     enabled: true,
-    emailScheduleTime: new Date('5/13/2021  9:33:28 PM'),
+    emailScheduleTime: new Date('5/13/2021 9:33:28 PM'),
     emailBodyTemplate: 'Hi John Doe,',
   };
 };

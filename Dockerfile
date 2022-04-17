@@ -1,10 +1,10 @@
 FROM node:17-alpine3.14
 
-WORKDIR /backend-test
+WORKDIR /backend
 
 COPY package*.json ./
 
-RUN npm install --production
+RUN npm install
 
 COPY . .
 

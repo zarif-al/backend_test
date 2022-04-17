@@ -3,6 +3,7 @@ services:
     build:
       dockerfile: Dockerfile-test
       context: .
+    command: sh -c './wait-for mysql:3306 -- npm run migration:run && npm run test:e2e-linux'
     depends_on:
       - mysql
     restart: on-failure:10
@@ -17,11 +18,14 @@ services:
       PORT: 3005
     ports:
       - '8090:3005'
+    volumes:
+      - /backend-test/node_modules
   mysql:
     image: mysql:8.0
     restart: always
     environment:
       MYSQL_DATABASE: backend-test
       MYSQL_ROOT_PASSWORD: Password
+      TZ: Asia/Dhaka
     ports:
       - '3307:3306'

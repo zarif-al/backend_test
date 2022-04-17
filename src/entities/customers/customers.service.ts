@@ -31,7 +31,7 @@ export class CustomersService {
           emailBodyTemplate: `Hi ${customer.name},`,
         }),
       );
-
+      console.log(updatedCustomers);
       await this.customersRepository.save(updatedCustomers);
 
       return { success: true, message: [''] };

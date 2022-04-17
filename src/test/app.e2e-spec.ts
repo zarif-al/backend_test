@@ -33,7 +33,7 @@ describe('AppController (e2e)', () => {
   });
 
   afterAll(async () => {
-    connection.getRepository(Customer).delete({});
+    /*     connection.getRepository(Customer).delete({}); */
     await app.close();
   });
 
