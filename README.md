@@ -123,12 +123,12 @@ Upload a csv file to the server and it will be parsed and inserted into the data
 - **Success Response:**
 
   - **Code:** 201 <br />
-    **Content:** `{ "message": "Success", "code": 200, "details": [] }`
+    **Content:** `{ "message": "Success", "code": 201, "details": [] }`
 
 - **Error Response:**
 
   - **Code:** 201 <br />
-    **Content:** `{ "message": "Some Failures", "code": 200, "details": [ { "type": "DB Error", "message": "The following chunk of rows could not be inserted due to faulty data.", "rows": "452 to 1000", "failureSource": [ "Garold McCloughlin", "gmccloughlinqy@mediafire.com", "81680 Di Loreto Park", null, "2021-10-28T15:58:00.000Z", "Hi Garold McCloughlin," ] } ] }`
+    **Content:** `{ "message": "Some Failures", "code": 201, "details": [ { "type": "DB Error", "message": "The following chunk of rows could not be inserted due to faulty data.", "rows": "452 to 1000", "failureSource": [ "Garold McCloughlin", "gmccloughlinqy@mediafire.com", "81680 Di Loreto Park", null, "2021-10-28T15:58:00.000Z", "Hi Garold McCloughlin," ] } ] }`
 
   OR
 

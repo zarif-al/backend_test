@@ -89,7 +89,7 @@ export class CustomersController {
 
           resolve({
             message: errors.length == 0 ? 'Success' : 'Some Failures',
-            code: 200,
+            code: 201,
             details: errors,
           });
         },

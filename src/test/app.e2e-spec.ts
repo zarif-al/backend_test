@@ -110,7 +110,7 @@ describe('AppController (e2e)', () => {
 
         expect(response.body).toEqual({
           message: 'Success',
-          code: 200,
+          code: 201,
           details: [],
         });
       });

@@ -114,7 +114,7 @@ describe('CustomersController', () => {
       test('then it should return a success message', () => {
         expect(response).toEqual({
           message: 'Success',
-          code: 200,
+          code: 201,
           details: [],
         });
       });
