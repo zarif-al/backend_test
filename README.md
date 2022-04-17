@@ -4,50 +4,73 @@
 
 This is a RESTApi that can read customer details from a csv and insert it into a database and return the customer details.
 
-### **Design Choices**
+### **Design**
 
-When the customer uploads a large file, they will get a response only when all records have been written to the database.
+When the customer uploads a file, they will get a response only when all records have been written to the database.
 
-I did this because if the request is released immediately then the user has no way of knowing when the db writes have completed. I might be able to set up another endpoint where the user can request to get db write progress, however I am not sure about the complexity that would add to this project. Another alternative I think would be to use web socket in the upload endpoint.
+I did this because if the request is released immediately then the user has no way of knowing when the db writes have completed. I might be able to set up another endpoint where the user can request to get db write progress, however I am not sure about the complexity that would add to this project. Another alternative I can think of would be to use a web socket for the upload endpoint.
 
-## **Docker Commands**
+The uploaded file is stored in a temporary folder and read via stream. Chunks of data are passed to the insert method and written to db via bulk insert. When the read is complete, the file is deleted.
+
+## **Docker Setup**
+
+**API Endpoint**
+
+```
+http://localhost:8080
+```
+
+**Database Endpoint**
+
+```
+http://localhost:3037
+```
+
+### **Unit Tests**
+
+```
+
+docker-compose -f docker-compose.test-unit.yml build
+docker-compose -f docker-compose.test-unit.yml run --rm api
+
+```
+
+### **E2E Tests**
+
+```
+
+docker-compose -f docker-compose.test-e2e.yml build
+docker-compose -f docker-compose.test-e2e.yml up
+
+```
+
+please remember to run the following command when finished.
+
+```
+
+docker-compose -f docker-compose.test-e2e.yml down
+
+```
 
 ### **Production**
 
 ```
 docker-compose -f docker-compose.prod.yml build
 docker-compose -f docker-compose.prod.yml up
+
 ```
 
 please remember to run the following command when finished.
 
 ```
+
 docker-compose -f docker-compose.prod.yml down
-```
-
-### **Unit Tests**
 
 ```
-docker-compose -f docker-compose.test-unit.yml build
-docker-compose -f docker-compose.test-unit.yml run --rm api
-```
 
-### **E2E Tests**
+## **Get Customers**
 
-```
-docker-compose -f docker-compose.test-e2e.yml build
-docker-compose -f docker-compose.test-e2e.yml up
-```
-
-please remember to run the following command when finished.
-
-```
-docker-compose -f docker-compose.test-e2e.yml down
-```
-
-## **Api Documentation**
-
-<_Additional information about your API call. Try to use verbs that match both request type (fetching vs modifying) and plurality (one vs multiple)._>
+Return array of enabled customers from database according to provided pagination options.
 
 - **URL**
 
@@ -59,94 +82,61 @@ docker-compose -f docker-compose.test-e2e.yml down
 
 - **URL Params**
 
-  <_If URL params exist, specify them in accordance with name mentioned in URL section. Separate into optional and required. Document data constraints._>
-
   **Optional:**
 
-  `offset=[string]`
-  <br>
-  `limit=[string]`
-
-- **Data Params**
-
-  <_If making a post request, what should the body payload look like? URL Params rules apply here too._>
+  `offset=[number]`<br/>
+  `limit=[number]`
 
 - **Success Response:**
 
-  <_What should the status code be on success and is there any returned data? This is useful when people need to to know what their callbacks should expect!_>
-
   - **Code:** 200 <br />
-    **Content:** `{ id : 12 }`
+    **Content:** <br />
+    `[ {"name": "Adelaida Allsup", "email": "aallsup46@behance.net", "address": "041 Annamark Hill", "enabled": true, "emailScheduleTime": "2021-09-29T05:19:09.000Z", "emailBodyTemplate": "Hi Adelaida Allsup,"} ] `
 
 - **Error Response:**
 
-  <_Most endpoints will have many ways they can fail. From unauthorized access, to wrongful parameters etc. All of those should be liste d here. It might seem repetitive, but it helps prevent assumptions from being made where they should be._>
-
-  - **Code:** 401 UNAUTHORIZED <br />
-    **Content:** `{ error : "Log in" }`
-
-  OR
-
-  - **Code:** 422 UNPROCESSABLE ENTRY <br />
-    **Content:** `{ error : "Email Invalid" }`
+  - **Code:** 400 <br />
+    **Content:** `{ "statusCode": 400, "message": "Invalid offset or limit", "error": "Bad Request" }`
 
 - **Sample Call:**
 
-  <_Just a sample call to your endpoint in a runnable format ($.ajax call or a curl request) - this makes life easier and more predictable._>
+  ```
+  http://localhost:8080/customers?offset=0&limit=10
+  ```
 
-- **Notes:**
+## **Import Customers**
 
-  <_This is where all uncertainties, commentary, discussion etc. can go. I recommend timestamping and identifying oneself when leaving comments here._>
+Upload a csv file to the server and it will be parsed and inserted into the database.
 
 - **URL**
 
-  <_The URL Structure (path only, no root url)_>
+  /import-customers
 
 - **Method:**
 
-  <_The request type_>
-
-  `GET` | `POST` | `DELETE` | `PUT`
-
-- **URL Params**
-
-  <_If URL params exist, specify them in accordance with name mentioned in URL section. Separate into optional and required. Document data constraints._>
-
-  **Required:**
-
-  `id=[integer]`
-
-  **Optional:**
-
-  `photo_id=[alphanumeric]`
+  `POST`
 
 - **Data Params**
 
-  <_If making a post request, what should the body payload look like? URL Params rules apply here too._>
+  `csv=[csv file]`
 
 - **Success Response:**
 
-  <_What should the status code be on success and is there any returned data? This is useful when people need to to know what their callbacks should expect!_>
-
-  - **Code:** 200 <br />
-    **Content:** `{ id : 12 }`
+  - **Code:** 201 <br />
+    **Content:** `{ "message": "Success", "code": 200, "details": [] }`
 
 - **Error Response:**
 
-  <_Most endpoints will have many ways they can fail. From unauthorized access, to wrongful parameters etc. All of those should be liste d here. It might seem repetitive, but it helps prevent assumptions from being made where they should be._>
-
-  - **Code:** 401 UNAUTHORIZED <br />
-    **Content:** `{ error : "Log in" }`
+  - **Code:** 201 <br />
+    **Content:** `{ "message": "Some Failures", "code": 200, "details": [ { "type": "DB Error", "message": "The following chunk of rows could not be inserted due to faulty data.", "rows": "452 to 1000", "failureSource": [ "Garold McCloughlin", "gmccloughlinqy@mediafire.com", "81680 Di Loreto Park", null, "2021-10-28T15:58:00.000Z", "Hi Garold McCloughlin," ] } ] }`
 
   OR
 
-  - **Code:** 422 UNPROCESSABLE ENTRY <br />
-    **Content:** `{ error : "Email Invalid" }`
+  - **Code:** 400 <br />
+    **Content:** `{ "statusCode": 400, "message": "Only CSV files are allowed!", "error": "Bad Request" }`
 
 - **Sample Call:**
 
-  <_Just a sample call to your endpoint in a runnable format ($.ajax call or a curl request) - this makes life easier and more predictable._>
-
-- **Notes:**
-
-  <_This is where all uncertainties, commentary, discussion etc. can go. I recommend timestamping and identifying oneself when leaving comments here._>
+  ```
+  http://localhost:8080/import-customers
+  ```
