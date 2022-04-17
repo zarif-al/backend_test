@@ -55,7 +55,7 @@ describe('AppController (e2e)', () => {
   describe('/import-customers', () => {
     describe('When /import-customers is called with a file', () => {
       test('then it should return a success message', async () => {
-        writeFile();
+        writeFile(join(__dirname, 'tempStorage/sampleCSV.csv'));
         const response = await request(app.getHttpServer())
           .post('/import-customers')
           .attach('csv', join(__dirname, 'tempStorage/sampleCSV.csv'));

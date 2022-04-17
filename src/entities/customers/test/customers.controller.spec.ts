@@ -86,7 +86,7 @@ describe('CustomersController', () => {
       let response;
 
       beforeEach(async () => {
-        writeFile();
+        writeFile(join(__dirname, 'tempStorage/sampleCSV.csv'));
         response = await customersController.uploadFile(
           sampleFile(
             join(__dirname, 'tempStorage/sampleCSV.csv'),

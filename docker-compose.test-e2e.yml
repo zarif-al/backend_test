@@ -3,7 +3,7 @@ services:
     build:
       dockerfile: Dockerfile-test
       context: .
-    command: sh -c './wait-for mysql:3306 -- npm run migration:run && npm run test:e2e --verbose'
+    command: sh -c './wait-for mysql:3306 -- npm run migration:run && npm run test:e2e'
     depends_on:
       - mysql
     restart: on-failure:10
