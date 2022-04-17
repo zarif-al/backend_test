@@ -12,6 +12,14 @@ I did this because if the request is released immediately then the user has no w
 
 The uploaded file is stored in a temporary folder and read via stream. Chunks of data are passed to the insert method and written to db via bulk insert. When the read is complete, the file is deleted.
 
+**Dependencies** <br/>
+
+I had to move some packages from devDependencies to dependencies because in docker I am running the migration after the project is up and running and the migration script needs those dependencies.
+
+**Waiting for DB** <br/>
+
+Docker's depends_on only waits for a service to be up and running, but that does not mean that is service is in a usable state. For example a database. So I used wait-for script (in production and e2e tests) to wait for the database to be ready to accept connections and then start the app/run the tests.
+
 ## **Docker Setup**
 
 **API Endpoint**
@@ -44,7 +52,7 @@ docker-compose -f docker-compose.test-e2e.yml up
 
 ```
 
-please remember to run the following command when finished.
+You can exit with `CTRL+C`, please remember to run the following command when finished.
 
 ```
 
@@ -60,7 +68,7 @@ docker-compose -f docker-compose.prod.yml up
 
 ```
 
-please remember to run the following command when finished.
+You can exit with `CTRL+C`, please remember to run the following command when finished.
 
 ```
 
