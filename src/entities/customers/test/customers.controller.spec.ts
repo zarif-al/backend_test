@@ -15,7 +15,7 @@ jest.mock('@/entities/customers/customers.service');
 
 function writeFile() {
   const csv = unparse([customerInputStub()]);
-  writeFileSync(join(__dirname, 'stubs/sampleCSV.csv'), csv);
+  writeFileSync(join(__dirname, 'tempStorage/sampleCSV.csv'), csv);
 }
 
 describe('CustomersController', () => {
@@ -88,7 +88,7 @@ describe('CustomersController', () => {
         writeFile();
         response = await customersController.uploadFile(
           sampleFile(
-            join(__dirname, 'stubs/sampleCSV.csv'),
+            join(__dirname, 'tempStorage/sampleCSV.csv'),
           ) as Express.Multer.File,
         );
       });
@@ -114,7 +114,7 @@ describe('CustomersController', () => {
       beforeEach(async () => {
         response = await customersController.uploadFile(
           sampleFile(
-            join(__dirname, 'stubs/sampleCSV.csv'),
+            join(__dirname, 'tempStorage/sampleCSV.csv'),
           ) as Express.Multer.File,
         );
       });
