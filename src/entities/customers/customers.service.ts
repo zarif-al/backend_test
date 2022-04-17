@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Customer } from './customer.entity';
 import { UploadStatus } from '@/utils/interface';
+import { CustomerDTO } from '@/entities/customers/dto/customer.dto';
+
 @Injectable()
 export class CustomersService {
   constructor(
@@ -20,7 +22,7 @@ export class CustomersService {
     });
   }
 
-  async insertMany(customers: Customer[]): Promise<UploadStatus> {
+  async insertMany(customers: CustomerDTO[]): Promise<UploadStatus> {
     try {
       const updatedCustomers = customers.map((customer) =>
         this.customersRepository.create({

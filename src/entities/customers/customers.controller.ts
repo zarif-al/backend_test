@@ -4,9 +4,8 @@ import {
   UploadedFile,
   Post,
   UseInterceptors,
-  Req,
+  Query,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { CustomersService } from './customers.service';
 import { Customer } from './customer.entity';
 import { Express } from 'express';
@@ -15,14 +14,21 @@ import { FileFilter } from '@/middlewares/fileFilter';
 import { createReadStream, unlink } from 'fs';
 import { parse } from 'papaparse';
 
+const DEFAULT_LIMIT = 100;
+
 @Controller()
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
   @Get('customers')
-  getAll(@Req() request: Request): Promise<Customer[]> {
-    const { offset = 0, limit = 100 } = request.query;
-    return this.customersService.getAll(Number(offset), Number(limit));
+  getAll(
+    @Query('offset') offset: string,
+    @Query('limit') limit: string,
+  ): Promise<Customer[]> {
+    const offsetNumber = offset !== undefined ? Number(offset) : 0;
+    const limitNumber = limit !== undefined ? Number(limit) : DEFAULT_LIMIT;
+
+    return this.customersService.getAll(offsetNumber, limitNumber);
   }
 
   @Post('import-customers')
