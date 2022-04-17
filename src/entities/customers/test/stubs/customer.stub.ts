@@ -46,7 +46,7 @@ export const customerOutputStub = (): CustomerOutputDTO => {
     email: 'doe@john.com',
     address: '123 Main St',
     enabled: true,
-    emailScheduleTime: '2021-05-13T15:33:28.000Z',
+    emailScheduleTime: new Date('5/13/2021 9:33:28 PM').toISOString(),
     emailBodyTemplate: 'Hi John Doe,',
   };
 };

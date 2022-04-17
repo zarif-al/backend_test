@@ -11,6 +11,7 @@ import { unparse } from 'papaparse';
 import { join } from 'path';
 import { Connection } from 'typeorm';
 import { Customer } from '@/entities/customers/customer.entity';
+import { unlinkSync } from 'fs';
 
 function writeFile() {
   const csv = unparse([customerInputStub()]);
@@ -29,11 +30,13 @@ describe('AppController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
 
-    connection = app.get(Connection);
+    connection = await app.get(Connection);
+    await connection.getRepository(Customer).delete({});
   });
 
   afterAll(async () => {
-    /*     connection.getRepository(Customer).delete({}); */
+    unlinkSync(join(__dirname, 'tempStorage/sampleCSV.csv'));
+    await connection.getRepository(Customer).delete({});
     await app.close();
   });
 
