@@ -2,21 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '@/app.module';
-import {
-  customerInputStub,
-  customerOutputStub,
-} from '@/entities/customers/test/stubs/customer.stub';
-import { writeFileSync } from 'fs';
-import { unparse } from 'papaparse';
+import { customerOutputStub } from '@/entities/customers/test/stubs/customer.stub';
 import { join } from 'path';
 import { Connection } from 'typeorm';
 import { Customer } from '@/entities/customers/customer.entity';
 import { unlinkSync } from 'fs';
-
-function writeFile() {
-  const csv = unparse([customerInputStub()]);
-  writeFileSync(join(__dirname, 'tempStorage/sampleCSV.csv'), csv);
-}
+import { writeFile } from '@/utils/writeFile';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;

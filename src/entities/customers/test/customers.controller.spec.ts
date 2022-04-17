@@ -7,17 +7,11 @@ import {
   customerInputStub,
 } from '@/entities/customers/test/stubs/customer.stub';
 import { sampleFile } from '@/entities/customers/test/stubs/file.stub';
-import { writeFileSync } from 'fs';
-import { unparse } from 'papaparse';
 import { join } from 'path';
 import { DEFAULT_LIMIT } from '@/entities/customers/utils/defaults';
+import { writeFile } from '@/utils/writeFile';
 
 jest.mock('@/entities/customers/customers.service');
-
-function writeFile() {
-  const csv = unparse([customerInputStub()]);
-  writeFileSync(join(__dirname, 'tempStorage/sampleCSV.csv'), csv);
-}
 
 describe('CustomersController', () => {
   const offset = 0;
