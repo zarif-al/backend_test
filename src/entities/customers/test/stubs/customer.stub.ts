@@ -29,6 +29,16 @@ export const customerInputStub = (): CustomerInputDTO => {
   };
 };
 
+export const customerDirtyInputStub = (): CustomerInputDTO => {
+  return {
+    name: 'John Dane',
+    email: 'dane@john.com',
+    address: null,
+    enabled: true,
+    emailScheduleTime: '5/13/2021 9:33:28 PM',
+  };
+};
+
 export const customerStub = (): Customer => {
   return {
     name: 'John Doe',

@@ -108,26 +108,5 @@ describe('CustomersController', () => {
         });
       });
     });
-
-    describe('When uploadFile is called with an invalid file', () => {
-      let response;
-
-      beforeEach(async () => {
-        response = await customersController.uploadFile(
-          sampleFile(
-            join(__dirname, 'tempStorage/sampleCSV.csv'),
-          ) as Express.Multer.File,
-        );
-      });
-
-      test('then it should not call customerService', () => {
-        expect(customersService.insertMany).not.toHaveBeenCalled();
-      });
-
-      test('then it should return a failure message', () => {
-        expect(response.message).toEqual('Parser Error');
-        expect(response.code).toEqual(500);
-      });
-    });
   });
 });
