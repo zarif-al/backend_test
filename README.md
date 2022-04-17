@@ -118,7 +118,7 @@ Upload a csv file to the server and it will be parsed and inserted into the data
 
 - **URL**
 
-  /import-customers
+  /import-customer
 
 - **Method:**
 
@@ -146,5 +146,5 @@ Upload a csv file to the server and it will be parsed and inserted into the data
 - **Sample Call:**
 
   ```
-  http://localhost:8080/import-customers
+  http://localhost:8080/import-customer
   ```

@@ -40,7 +40,7 @@ export class CustomersController {
     }
   }
 
-  @Post('import-customers')
+  @Post('import-customer')
   @UseInterceptors(
     FileInterceptor('csv', {
       fileFilter: FileFilter,

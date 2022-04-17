@@ -81,12 +81,12 @@ describe('AppController (e2e)', () => {
     });
   });
 
-  describe('/import-customers', () => {
-    describe('When/import-customers is called with a dirty file', () => {
+  describe('/import-customer', () => {
+    describe('When/import-customer is called with a dirty file', () => {
       test("then it should return an error message and the details section should contain the incomplete customer's name and email", async () => {
         writeFile(join(__dirname, 'tempStorage/sampleCSV.csv'), 'dirty');
         const response = await request(app.getHttpServer())
-          .post('/import-customers')
+          .post('/import-customer')
           .attach('csv', join(__dirname, 'tempStorage/sampleCSV.csv'));
 
         expect(response.body.message).toEqual('Some Failures');
@@ -101,11 +101,11 @@ describe('AppController (e2e)', () => {
       });
     });
 
-    describe('When /import-customers is called with a clean file', () => {
+    describe('When /import-customer is called with a clean file', () => {
       test('then it should return a success message', async () => {
         writeFile(join(__dirname, 'tempStorage/sampleCSV.csv'));
         const response = await request(app.getHttpServer())
-          .post('/import-customers')
+          .post('/import-customer')
           .attach('csv', join(__dirname, 'tempStorage/sampleCSV.csv'));
 
         expect(response.body).toEqual({
