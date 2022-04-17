@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CustomersService } from '@/entities/customers/customers.service';
 import { CustomersController } from '@/entities/customers/customers.controller';
 import { Customer } from '@/entities/customers/customer.entity';
-import { customerStubs } from '@/entities/customers/test/stubs/customer.stub';
+import {
+  customerStubs,
+  customerInputStub,
+} from '@/entities/customers/test/stubs/customer.stub';
 import { sampleFile } from '@/entities/customers/test/stubs/file.stub';
 import { writeFileSync } from 'fs';
 import { unparse } from 'papaparse';
@@ -11,16 +14,7 @@ import { join } from 'path';
 jest.mock('@/entities/customers/customers.service');
 
 function writeFile() {
-  const csv = unparse([
-    {
-      name: 'John Doe',
-      email: 'doe@john.com',
-      address: '123 Main St',
-      enabled: true,
-      emailScheduleTime: new Date('5/13/2021  9:33:28 PM'),
-      emailBodyTemplate: 'Hi John Doe,',
-    },
-  ]);
+  const csv = unparse([customerInputStub()]);
   writeFileSync(join(__dirname, 'stubs/sampleCSV.csv'), csv);
 }
 
@@ -93,12 +87,16 @@ describe('CustomersController', () => {
       beforeEach(async () => {
         writeFile();
         response = await customersController.uploadFile(
-          sampleFile() as Express.Multer.File,
+          sampleFile(
+            join(__dirname, 'stubs/sampleCSV.csv'),
+          ) as Express.Multer.File,
         );
       });
 
-      test('then it should call customerService', () => {
-        expect(customersService.insertMany).toHaveBeenCalled();
+      test('then it should call customerService with an array of customer input objects', () => {
+        expect(customersService.insertMany).toHaveBeenCalledWith([
+          customerInputStub(),
+        ]);
       });
 
       test('then it should return a success message', () => {
@@ -115,7 +113,9 @@ describe('CustomersController', () => {
 
       beforeEach(async () => {
         response = await customersController.uploadFile(
-          sampleFile() as Express.Multer.File,
+          sampleFile(
+            join(__dirname, 'stubs/sampleCSV.csv'),
+          ) as Express.Multer.File,
         );
       });
 

@@ -1,4 +1,4 @@
-export const sampleFile = () => {
+export const sampleFile = (path: string) => {
   return {
     fieldname: 'csv',
     originalname: '1K_Rows.csv',
@@ -6,7 +6,7 @@ export const sampleFile = () => {
     mimetype: 'text/csv',
     destination: './src/entities/customers/test/stubs',
     filename: 'sampleCSV',
-    path: 'src\\entities\\customers\\test\\stubs\\sampleCSV.csv',
+    path: path,
     size: 458,
   };
 };

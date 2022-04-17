@@ -4,7 +4,7 @@ WORKDIR /backend-test
 
 COPY package*.json ./
 
-RUN npm install --production
+RUN npm install
 
 COPY . .
 
@@ -14,4 +14,4 @@ ENV PORT=8080
 
 EXPOSE 8080
 
-CMD npm run start
+CMD npm test --verbose
