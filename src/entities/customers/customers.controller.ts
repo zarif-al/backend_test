@@ -4,6 +4,8 @@ import {
   UploadedFile,
   Post,
   UseInterceptors,
+  Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { CustomersService } from './customers.service';
 import { Customer } from './customer.entity';
@@ -12,17 +14,33 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { FileFilter } from '@/middlewares/fileFilter';
 import { createReadStream, unlink } from 'fs';
 import { parse } from 'papaparse';
+import { DEFAULT_LIMIT } from '@/entities/customers/utils/defaults';
 
 @Controller()
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
-  @Get()
-  getAll(): Promise<Customer[]> {
-    return this.customersService.findAll();
+  @Get('customers')
+  getAll(
+    @Query('offset') offset: string,
+    @Query('limit') limit: string,
+  ): Promise<Customer[]> {
+    const offsetNumber = offset !== undefined ? Number(offset) : 0;
+    const limitNumber = limit !== undefined ? Number(limit) : DEFAULT_LIMIT;
+
+    if (
+      isNaN(offsetNumber) ||
+      isNaN(limitNumber) ||
+      limitNumber < 0 ||
+      offsetNumber < 0
+    ) {
+      throw new BadRequestException('Invalid offset or limit');
+    } else {
+      return this.customersService.getAll(offsetNumber, limitNumber);
+    }
   }
 
-  @Post('upload')
+  @Post('import-customers')
   @UseInterceptors(
     FileInterceptor('csv', {
       fileFilter: FileFilter,
@@ -36,26 +54,30 @@ export class CustomersController {
       let rowCount = 0;
 
       const PARSER_CONFIGURATION = {
+        delimiter: ',',
         header: true,
         dynamicTyping: true,
         unlink: unlink,
-        chunk: async function (result) {
-          const uploaded = await customersService.insertMany(result.data);
+        chunk: async function (result, parser) {
+          parser.pause();
 
-          if (uploaded.success === false) {
+          const uploadResponse = await customersService.insertMany(result.data);
+
+          if (uploadResponse.success === false) {
             const errorMsg = {
-              type: 'DB Insert Error',
-              code: 500,
+              type: 'DB Error',
               message:
                 'The following chunk of rows could not be inserted due to faulty data.',
               rows: rowCount + ' to ' + (rowCount + result.data.length),
-              rowFailed: uploaded.message,
+              failureSource: uploadResponse.message,
             };
 
             errors = [...errors, errorMsg];
           }
 
           rowCount += result.data.length;
+
+          parser.resume();
         },
         complete: function () {
           this.unlink(file.path, (err) => {
@@ -67,24 +89,28 @@ export class CustomersController {
 
           resolve({
             message: errors.length == 0 ? 'Success' : 'Some Failures',
+            code: 201,
             details: errors,
           });
         },
         error: function (error) {
           errors = [...errors, error];
-          reject(errors);
+
+          reject({
+            message: 'Parser Error',
+            code: 500,
+            details: errors,
+          });
         },
       };
 
       parse(createReadStream(file.path), PARSER_CONFIGURATION);
-    }).then(
-      function onFulfilled(value) {
+    })
+      .then((value) => {
         return value;
-      },
-
-      function onRejected(reason) {
-        return reason;
-      },
-    );
+      })
+      .catch((err) => {
+        return err;
+      });
   }
 }

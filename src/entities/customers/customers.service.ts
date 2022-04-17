@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Customer } from './customer.entity';
 import { UploadStatus } from '@/utils/interface';
+import { CustomerInputDTO } from '@/entities/customers/dto/customer.dto';
+
 @Injectable()
 export class CustomersService {
   constructor(
@@ -10,11 +12,23 @@ export class CustomersService {
     private customersRepository: Repository<Customer>,
   ) {}
 
-  findAll(): Promise<Customer[]> {
-    return this.customersRepository.find();
+  async getAll(offset: number, limit: number): Promise<Customer[]> {
+    try {
+      const customers = await this.customersRepository.find({
+        where: {
+          enabled: true,
+        },
+        skip: offset,
+        take: limit,
+      });
+
+      return customers;
+    } catch (e) {
+      return e;
+    }
   }
 
-  async insertMany(customers: Customer[]): Promise<UploadStatus> {
+  async insertMany(customers: CustomerInputDTO[]): Promise<UploadStatus> {
     try {
       const updatedCustomers = customers.map((customer) =>
         this.customersRepository.create({
@@ -24,13 +38,10 @@ export class CustomersService {
         }),
       );
       await this.customersRepository.save(updatedCustomers);
+
       return { success: true, message: [''] };
     } catch (e) {
       return { success: false, message: e.parameters };
     }
-  }
-
-  async remove(id: string): Promise<void> {
-    await this.customersRepository.delete(id);
   }
 }

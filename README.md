@@ -1,73 +1,142 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# **Backend Api**
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## **Project Details**
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This is a RESTApi that can read customer details from a csv and insert it into a database and return the customer details.
 
-## Description
+### **Design**
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+When the customer uploads a file, they will get a response only when all records have been written to the database.
 
-## Installation
+I did this because if the request is released immediately then the user has no way of knowing when the db writes have completed. I might be able to set up another endpoint where the user can request to get db write progress, however I am not sure about the complexity that would add to this project. Another alternative I can think of would be to use a web socket for the upload endpoint.
 
-```bash
-$ npm install
+The uploaded file is stored in a temporary folder and read via stream. Chunks of data are passed to the insert method and written to db via bulk insert. When the read is complete, the file is deleted.
+
+## **Docker Setup**
+
+**API Endpoint**
+
+```
+http://localhost:8080
 ```
 
-## Running the app
+**Database Endpoint**
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```
+http://localhost:3037
 ```
 
-## Test
+### **Unit Tests**
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
-## Support
+docker-compose -f docker-compose.test-unit.yml build
+docker-compose -f docker-compose.test-unit.yml run --rm api
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```
 
-## Stay in touch
+### **E2E Tests**
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
 
-## License
+docker-compose -f docker-compose.test-e2e.yml build
+docker-compose -f docker-compose.test-e2e.yml up
 
-Nest is [MIT licensed](LICENSE).
+```
+
+please remember to run the following command when finished.
+
+```
+
+docker-compose -f docker-compose.test-e2e.yml down
+
+```
+
+### **Production**
+
+```
+docker-compose -f docker-compose.prod.yml build
+docker-compose -f docker-compose.prod.yml up
+
+```
+
+please remember to run the following command when finished.
+
+```
+
+docker-compose -f docker-compose.prod.yml down
+
+```
+
+## **Get Customers**
+
+Return array of enabled customers from database according to provided pagination options.
+
+- **URL**
+
+  /customers
+
+- **Method:**
+
+  `GET`
+
+- **URL Params**
+
+  **Optional:**
+
+  `offset=[number]`<br/>
+  `limit=[number]`
+
+- **Success Response:**
+
+  - **Code:** 200 <br />
+    **Content:** <br />
+    `[ {"name": "Adelaida Allsup", "email": "aallsup46@behance.net", "address": "041 Annamark Hill", "enabled": true, "emailScheduleTime": "2021-09-29T05:19:09.000Z", "emailBodyTemplate": "Hi Adelaida Allsup,"} ] `
+
+- **Error Response:**
+
+  - **Code:** 400 <br />
+    **Content:** `{ "statusCode": 400, "message": "Invalid offset or limit", "error": "Bad Request" }`
+
+- **Sample Call:**
+
+  ```
+  http://localhost:8080/customers?offset=0&limit=10
+  ```
+
+## **Import Customers**
+
+Upload a csv file to the server and it will be parsed and inserted into the database.
+
+- **URL**
+
+  /import-customers
+
+- **Method:**
+
+  `POST`
+
+- **Data Params**
+
+  `csv=[csv file]`
+
+- **Success Response:**
+
+  - **Code:** 201 <br />
+    **Content:** `{ "message": "Success", "code": 201, "details": [] }`
+
+- **Error Response:**
+
+  - **Code:** 201 <br />
+    **Content:** `{ "message": "Some Failures", "code": 201, "details": [ { "type": "DB Error", "message": "The following chunk of rows could not be inserted due to faulty data.", "rows": "452 to 1000", "failureSource": [ "Garold McCloughlin", "gmccloughlinqy@mediafire.com", "81680 Di Loreto Park", null, "2021-10-28T15:58:00.000Z", "Hi Garold McCloughlin," ] } ] }`
+
+  OR
+
+  - **Code:** 400 <br />
+    **Content:** `{ "statusCode": 400, "message": "Only CSV files are allowed!", "error": "Bad Request" }`
+
+- **Sample Call:**
+
+  ```
+  http://localhost:8080/import-customers
+  ```

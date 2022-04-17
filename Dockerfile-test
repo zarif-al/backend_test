@@ -1,6 +1,6 @@
 FROM node:17-alpine3.14
 
-WORKDIR /backend
+WORKDIR /backend-test
 
 COPY package*.json ./
 
@@ -14,4 +14,4 @@ ENV PORT=8080
 
 EXPOSE 8080
 
-CMD npm run start
+CMD npm run test:unit
