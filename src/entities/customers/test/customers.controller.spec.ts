@@ -10,6 +10,7 @@ import { sampleFile } from '@/entities/customers/test/stubs/file.stub';
 import { writeFileSync } from 'fs';
 import { unparse } from 'papaparse';
 import { join } from 'path';
+import { DEFAULT_LIMIT } from '@/entities/customers/utils/defaults';
 
 jest.mock('@/entities/customers/customers.service');
 
@@ -19,6 +20,9 @@ function writeFile() {
 }
 
 describe('CustomersController', () => {
+  const offset = 0;
+  const limit = 10;
+
   let customersService: CustomersService;
   let customersController: CustomersController;
 
@@ -47,15 +51,18 @@ describe('CustomersController', () => {
   });
 
   describe('GetAll', () => {
-    describe('When getAll is called with query params', () => {
+    describe(`When getAll is called with query params offset=${offset}, limit=${limit}`, () => {
       let customers: Customer[];
 
       beforeEach(async () => {
-        customers = await customersController.getAll('0', '10');
+        customers = await customersController.getAll(
+          String(offset),
+          String(limit),
+        );
       });
 
-      test('then it should call customerService with correct offset and limit', () => {
-        expect(customersService.getAll).toHaveBeenCalledWith(0, 10);
+      test(`then it should call customerService with offset=${offset} and limit=${limit}`, () => {
+        expect(customersService.getAll).toHaveBeenCalledWith(offset, limit);
       });
 
       test('then it should return an array of customers', () => {
@@ -70,8 +77,8 @@ describe('CustomersController', () => {
         customers = await customersController.getAll(undefined, undefined);
       });
 
-      test('then it should call customerService with default offset and limit', () => {
-        expect(customersService.getAll).toHaveBeenCalledWith(0, 100);
+      test(`then it should call customerService with offset=0 and default limit=${DEFAULT_LIMIT}`, () => {
+        expect(customersService.getAll).toHaveBeenCalledWith(0, DEFAULT_LIMIT);
       });
 
       test('then it should return an array of customers', () => {

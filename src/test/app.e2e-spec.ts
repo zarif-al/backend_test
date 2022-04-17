@@ -31,7 +31,6 @@ describe('AppController (e2e)', () => {
     await app.init();
 
     connection = await app.get(Connection);
-    await connection.getRepository(Customer).delete({});
   });
 
   afterAll(async () => {

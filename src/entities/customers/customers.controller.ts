@@ -13,8 +13,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { FileFilter } from '@/middlewares/fileFilter';
 import { createReadStream, unlink } from 'fs';
 import { parse } from 'papaparse';
-
-const DEFAULT_LIMIT = 100;
+import { DEFAULT_LIMIT } from '@/entities/customers/utils/defaults';
 
 @Controller()
 export class CustomersController {

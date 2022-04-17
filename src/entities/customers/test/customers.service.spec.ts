@@ -8,6 +8,7 @@ import {
   customerStub,
 } from '@/entities/customers/test/stubs/customer.stub';
 import { Repository } from 'typeorm';
+import { DEFAULT_LIMIT } from '@/entities/customers/utils/defaults';
 
 describe('CustomersService', () => {
   const offset = 0;
