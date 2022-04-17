@@ -10,6 +10,7 @@ import { sampleFile } from '@/entities/customers/test/stubs/file.stub';
 import { join } from 'path';
 import { DEFAULT_LIMIT } from '@/entities/customers/utils/defaults';
 import { writeFile } from '@/utils/writeFile';
+import { BadRequestException } from '@nestjs/common';
 
 jest.mock('@/entities/customers/customers.service');
 
@@ -77,6 +78,16 @@ describe('CustomersController', () => {
 
       test('then it should return an array of customers', () => {
         expect(customers).toEqual(customerStubs());
+      });
+    });
+
+    describe('When getAll is called with invalid query params', () => {
+      test('then it should throw an error', async () => {
+        try {
+          await customersController.getAll('asd', 'asd');
+        } catch (error) {
+          expect(error).toBeInstanceOf(BadRequestException);
+        }
       });
     });
   });

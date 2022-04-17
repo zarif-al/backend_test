@@ -45,12 +45,38 @@ describe('AppController (e2e)', () => {
   });
 
   describe('/customers (First)', () => {
-    describe('When /customers is called', () => {
+    describe('When /customers is called without query params', () => {
       test('then it should return an empty array', async () => {
         const response = await request(app.getHttpServer()).get('/customers');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual([]);
+      });
+    });
+
+    describe('When /customers is called with valid query params', () => {
+      test('then it should return an empty array', async () => {
+        const response = await request(app.getHttpServer())
+          .get('/customers')
+          .query({ offset: '0', limit: '10' });
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual([]);
+      });
+    });
+
+    describe('When /customers is called with invalid query params', () => {
+      test('then it should return an error', async () => {
+        const response = await request(app.getHttpServer())
+          .get('/customers')
+          .query({ offset: 'asd', limit: '-100' });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+          statusCode: 400,
+          message: 'Invalid offset or limit',
+          error: 'Bad Request',
+        });
       });
     });
   });

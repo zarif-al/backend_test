@@ -12,14 +12,20 @@ export class CustomersService {
     private customersRepository: Repository<Customer>,
   ) {}
 
-  getAll(offset: number, limit: number): Promise<Customer[]> {
-    return this.customersRepository.find({
-      where: {
-        enabled: true,
-      },
-      skip: offset,
-      take: limit,
-    });
+  async getAll(offset: number, limit: number): Promise<Customer[]> {
+    try {
+      const customers = await this.customersRepository.find({
+        where: {
+          enabled: true,
+        },
+        skip: offset,
+        take: limit,
+      });
+
+      return customers;
+    } catch (e) {
+      return e;
+    }
   }
 
   async insertMany(customers: CustomerInputDTO[]): Promise<UploadStatus> {

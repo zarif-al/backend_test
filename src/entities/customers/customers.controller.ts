@@ -5,6 +5,7 @@ import {
   Post,
   UseInterceptors,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { CustomersService } from './customers.service';
 import { Customer } from './customer.entity';
@@ -27,7 +28,16 @@ export class CustomersController {
     const offsetNumber = offset !== undefined ? Number(offset) : 0;
     const limitNumber = limit !== undefined ? Number(limit) : DEFAULT_LIMIT;
 
-    return this.customersService.getAll(offsetNumber, limitNumber);
+    if (
+      isNaN(offsetNumber) ||
+      isNaN(limitNumber) ||
+      limitNumber < 0 ||
+      offsetNumber < 0
+    ) {
+      throw new BadRequestException('Invalid offset or limit');
+    } else {
+      return this.customersService.getAll(offsetNumber, limitNumber);
+    }
   }
 
   @Post('import-customers')
