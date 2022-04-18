@@ -8,6 +8,8 @@ RUN npm install --production
 
 COPY . .
 
+RUN chmod +x wait-for
+
 RUN npm run build
 
 CMD npm run start
