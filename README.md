@@ -12,6 +12,8 @@ I did this because if the request is released immediately then the user has no w
 
 The uploaded file is stored in a temporary folder and read via stream. Chunks of data are passed to the insert method and written to db via bulk insert. When the read is complete, the file is deleted.
 
+Email is used as the primary key and TypeORM save method is used to insert into DB, so a new record with the same email will create an UPDATE instead of INSERT.
+
 **Dependencies** <br/>
 
 I had to move some packages from devDependencies to dependencies because in docker I am running the migration after the project is up and running and the migration script needs those dependencies.
@@ -137,6 +139,11 @@ Upload a csv file to the server and it will be parsed and inserted into the data
 
   - **Code:** 201 <br />
     **Content:** `{ "message": "Some Failures", "code": 201, "details": [ { "type": "DB Error", "message": "The following chunk of rows could not be inserted due to faulty data.", "rows": "452 to 1000", "failureSource": [ "Garold McCloughlin", "gmccloughlinqy@mediafire.com", "81680 Di Loreto Park", null, "2021-10-28T15:58:00.000Z", "Hi Garold McCloughlin," ] } ] }`
+
+  OR
+
+  - **Code:** 201 <br />
+    **Content:** `{ "message": "Some Failures", "code": 201, "details": [ { "type": "DB Error", "message": "The following chunk of rows could not be inserted due to faulty data.", "rows": "452 to 1000", "failureSource": [ "null", "gmccloughlinqy@mediafire.com" ] } ] }`
 
   OR
 
