@@ -74,7 +74,7 @@ You can exit with `CTRL+C`, please remember to run the following command when fi
 
 ```
 
-`docker-compose` -f docker-compose.prod.yml down
+docker-compose -f docker-compose.prod.yml down
 
 ```
 
