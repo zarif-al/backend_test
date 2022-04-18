@@ -14,9 +14,7 @@ services:
       MYSQL_USER: root
       MYSQL_USER_PASS: Password
       MYSQL_TEST_DATABASE_NAME: backend-test
-      PORT: 3005
-    ports:
-      - '8090:3005'
+      PORT: 3000
   mysql:
     image: mysql:8.0
     restart: always
