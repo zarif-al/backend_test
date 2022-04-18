@@ -74,7 +74,7 @@ You can exit with `CTRL+C`, please remember to run the following command when fi
 
 ```
 
-docker-compose -f docker-compose.prod.yml down
+`docker-compose` -f docker-compose.prod.yml down
 
 ```
 
@@ -101,12 +101,31 @@ Return array of enabled customers from database according to provided pagination
 
   - **Code:** 200 <br />
     **Content:** <br />
-    `[ {"name": "Adelaida Allsup", "email": "aallsup46@behance.net", "address": "041 Annamark Hill", "enabled": true, "emailScheduleTime": "2021-09-29T05:19:09.000Z", "emailBodyTemplate": "Hi Adelaida Allsup,"} ] `
+
+    ```json
+    [
+      {
+        "name": "Adelaida Allsup",
+        "email": "aallsup46@behance.net",
+        "address": "041 Annamark Hill",
+        "enabled": true,
+        "emailScheduleTime": "2021-09-29T05:19:09.000Z",
+        "emailBodyTemplate": "Hi Adelaida Allsup,"
+      }
+    ]
+    ```
 
 - **Error Response:**
 
   - **Code:** 400 <br />
-    **Content:** `{ "statusCode": 400, "message": "Invalid offset or limit", "error": "Bad Request" }`
+    **Content:**
+    ```json
+    {
+      "statusCode": 400,
+      "message": "Invalid offset or limit",
+      "error": "Bad Request"
+    }
+    ```
 
 - **Sample Call:**
 
@@ -133,22 +152,71 @@ Upload a csv file to the server and it will be parsed and inserted into the data
 - **Success Response:**
 
   - **Code:** 201 <br />
-    **Content:** `{ "message": "Success", "code": 201, "details": [] }`
+    **Content:**
+    ```json
+    {
+      "message": "Success",
+      "code": 201,
+      "details": []
+    }
+    ```
 
 - **Error Response:**
 
   - **Code:** 201 <br />
-    **Content:** `{ "message": "Some Failures", "code": 201, "details": [ { "type": "DB Error", "message": "The following chunk of rows could not be inserted due to faulty data.", "rows": "452 to 1000", "failureSource": [ "Garold McCloughlin", "gmccloughlinqy@mediafire.com", "81680 Di Loreto Park", null, "2021-10-28T15:58:00.000Z", "Hi Garold McCloughlin," ] } ] }`
+    **Content:**
+    ```json
+    {
+      "message": "Some Failures",
+      "code": 201,
+      "details": [
+        {
+          "type": "DB Error",
+          "message": "The following chunk of rows could not be inserted due to faulty data.",
+          "rows": "452 to 1000",
+          "failureSource": [
+            "Garold McCloughlin",
+            "gmccloughlinqy@mediafire.com",
+            "81680 Di Loreto Park",
+            null,
+            "2021-10-28T15:58:00.000Z",
+            "Hi Garold McCloughlin,"
+          ]
+        }
+      ]
+    }
+    ```
 
   OR
 
   - **Code:** 201 <br />
-    **Content:** `{ "message": "Some Failures", "code": 201, "details": [ { "type": "DB Error", "message": "The following chunk of rows could not be inserted due to faulty data.", "rows": "452 to 1000", "failureSource": [ "null", "gmccloughlinqy@mediafire.com" ] } ] }`
+    **Content:**
+    ```json
+    {
+      "message": "Some Failures",
+      "code": 201,
+      "details": [
+        {
+          "type": "DB Error",
+          "message": "The following chunk of rows could not be inserted due to faulty data.",
+          "rows": "452 to 1000",
+          "failureSource": ["null", "gmccloughlinqy@mediafire.com"]
+        }
+      ]
+    }
+    ```
 
   OR
 
   - **Code:** 400 <br />
-    **Content:** `{ "statusCode": 400, "message": "Only CSV files are allowed!", "error": "Bad Request" }`
+    **Content:**
+    ```json
+    {
+      "statusCode": 400,
+      "message": "Only CSV files are allowed!",
+      "error": "Bad Request"
+    }
+    ```
 
 - **Sample Call:**
 
