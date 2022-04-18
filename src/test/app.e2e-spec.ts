@@ -83,7 +83,7 @@ describe('AppController (e2e)', () => {
 
   describe('/import-customer', () => {
     describe('When/import-customer is called with a dirty file', () => {
-      test("then it should return an error message and the details section should contain the incomplete customer's name and email", async () => {
+      test("then it should return an error message and the details section should contain the incomplete customer's email", async () => {
         writeFile(join(__dirname, 'tempStorage/sampleCSV.csv'), 'dirty');
         const response = await request(app.getHttpServer())
           .post('/import-customer')
