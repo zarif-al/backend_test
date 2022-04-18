@@ -94,10 +94,6 @@ describe('AppController (e2e)', () => {
         expect(response.body.details[0].failureSource).toContain(
           customerDirtyInputStub().email,
         );
-
-        expect(response.body.details[0].failureSource).toContain(
-          customerDirtyInputStub().name,
-        );
       });
     });
 
