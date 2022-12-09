@@ -4,11 +4,10 @@ WORKDIR /backend
 
 COPY package*.json ./
 
-RUN npm install --production
+RUN npm install
 
 COPY . .
 
-RUN chmod +x wait-for
 
 RUN npm run build
 
