@@ -20,7 +20,7 @@ const connectionOptions = {
   cli: {
     migrationsDir: 'migrations',
   },
-  retryDelay: 3000,
+  retryDelay: 5000,
   retryAttempts: 100,
 };
 
