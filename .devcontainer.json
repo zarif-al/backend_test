@@ -3,5 +3,24 @@
 	"dockerComposeFile": "./docker-compose.dev.yml",
 	"workspaceFolder": "/workspace",
 	"service": "api",
-	"shutdownAction": "stopCompose"
+	"shutdownAction": "stopCompose",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"steoates.autoimport",
+				"michelemelluso.code-beautifier",
+				"mikestead.dotenv",
+				"dbaeumer.vscode-eslint",
+				"mhutchie.git-graph",
+				"ms-vscode.vscode-typescript-next",
+				"Orta.vscode-jest",
+				"ms-vsliveshare.vsliveshare",
+				"ms-vsliveshare.vsliveshare-audio",
+				"ms-vsliveshare.vsliveshare-pack",
+				"PKief.material-icon-theme",
+				"bradlc.vscode-tailwindcss",
+				"redhat.vscode-yaml"
+			]
+		}
+	}
 }
