@@ -1,9 +1,10 @@
 import { Customer } from '@/entities/customers/customer.entity';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const connectionOptions = {
+const connectionOptions: TypeOrmModuleOptions = {
   type: 'mysql',
   host: process.env.MYSQL_HOST,
   port: Number(process.env.MYSQL_PORT),
