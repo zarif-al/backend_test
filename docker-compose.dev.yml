@@ -1,3 +1,6 @@
+volumes:
+  csv-to-db:
+
 services:
   api:
     build:
@@ -15,6 +18,12 @@ services:
       MYSQL_USER_PASS: Password
       MYSQL_DATABASE_NAME: backend
       PORT: 3000
+    volumes:
+      # Mounts the project folder to '/workspace'. The target path inside the container
+      # should match what your application expects. In this case, the compose file is
+      # in a sub-folder, so you will mount '..'. You would then reference this path as the
+      # 'workspaceFolder' in '.devcontainer/devcontainer.json' so VS Code starts here.
+      - .:/workspace:cached
   mysql:
     image: mysql:8.0
     restart: always
@@ -25,3 +34,5 @@ services:
       - '3307:3306'
     expose:
       - '3307'
+    volumes:
+      - 'csv-to-db:/var/lib/mysql/data'
