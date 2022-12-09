@@ -4,7 +4,7 @@ volumes:
 services:
   api:
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       context: .
     depends_on:
       - mysql
