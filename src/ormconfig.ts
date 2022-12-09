@@ -1,10 +1,9 @@
-import { ConnectionOptions } from 'typeorm';
 import { Customer } from '@/entities/customers/customer.entity';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const connectionOptions: ConnectionOptions = {
+const connectionOptions = {
   type: 'mysql',
   host: process.env.MYSQL_HOST,
   port: Number(process.env.MYSQL_PORT),
@@ -21,6 +20,8 @@ const connectionOptions: ConnectionOptions = {
   cli: {
     migrationsDir: 'migrations',
   },
+  retryDelay: 3000,
+  retryAttempts: 100,
 };
 
 export = connectionOptions;
