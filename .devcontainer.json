@@ -1,6 +1,7 @@
 {
 	"name": "CSV To DB",
 	"dockerComposeFile": "./docker-compose.dev.yml",
-	"workspaceFolder": "/backend",
-	"service": "api"
+	"workspaceFolder": "/workspace",
+	"service": "api",
+	"shutdownAction": "stopCompose"
 }
