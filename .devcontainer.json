@@ -20,7 +20,36 @@
 				"PKief.material-icon-theme",
 				"bradlc.vscode-tailwindcss",
 				"redhat.vscode-yaml"
-			]
+			],
+			"settings": {
+				// Editor Settings
+				"editor.formatOnPaste": true,
+				"editor.defaultFormatter": "esbenp.prettier-vscode",
+				"eslint.run": "onSave",
+				"editor.formatOnSave": true,
+				"editor.formatOnType": true,
+				"workbench.iconTheme": "material-icon-theme",
+				"editor.codeActionsOnSave": {
+					"source.fixAll.eslint": true
+				},
+				// CSS Settings
+				"css.format.newlineBetweenRules": false,
+				"css.format.enable": false,
+				"css.lint.argumentsInColorFunction": "warning",
+				"css.lint.boxModel": "warning",
+				"css.lint.compatibleVendorPrefixes": "warning",
+				"css.lint.duplicateProperties": "warning",
+				"css.lint.float": "warning",
+				"css.lint.fontFaceProperties": "ignore",
+				"css.lint.hexColorLength": "warning",
+				// Prettier
+				"prettier.useTabs": true,
+				"prettier.enableDebugLogs": true,
+				// Language Settings
+				"typescript.updateImportsOnFileMove.enabled": "always",
+				"typescript.validate.enable": true,
+				"javascript.updateImportsOnFileMove.enabled": "always"
+			}
 		}
-	}
+	},
 }
