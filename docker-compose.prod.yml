@@ -6,6 +6,7 @@ services:
     depends_on:
       - mysql
     restart: on-failure:10
+    command: npm run start
     environment:
       TESTING: 'false'
       MYSQL_HOST: mysql
