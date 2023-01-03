@@ -35,4 +35,4 @@ services:
     expose:
       - '3307'
     volumes:
-      - 'csv-to-db:/var/lib/mysql/data'
+      - "csv-to-db:/var/lib/mysql"
